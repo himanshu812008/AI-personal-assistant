@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<header class="page-header">
+  <div><p class="eyebrow">{{ user.username }}'s workspace</p><h1>Your dashboard</h1><p class="muted">See what matters, then take the next small step.</p></div>
+  <a class="button" href="{{ url_for('tasks') }}">Add a task</a>
+</header>
+<section class="metrics" aria-label="Your current progress">
+  <article><span class="metric-label">Completed today</span><strong>{{ done_today }}</strong><small>tasks checked off</small></article>
+  <article><span class="metric-label">Task completion</span><strong>{{ (complete / total * 100)|round|int if total else 0 }}%</strong><small>{{ complete }} of {{ total }} total tasks</small></article>
+  <article><span class="metric-label">Active habits</span><strong>{{ habits|length }}</strong><small>{{ habits|selectattr('checked_today')|list|length }} checked in today</small></article>
+  <article><span class="metric-label">Goals in progress</span><strong>{{ goals|length }}</strong><small>intentions with direction</small></article>
+</section>
+<section class="grid two">
+  <article class="panel chart-panel"><div class="panel-heading"><div><h2>Weekly task activity</h2><p class="muted">Tasks completed over the last 7 days</p></div></div><div class="chart-wrap"><canvas id="activity" aria-label="Weekly completed tasks bar chart" role="img"></canvas><p id="chart-fallback" class="muted chart-fallback" hidden>Chart unavailable. Your task data is still saved.</p></div></article>
+  <article class="panel"><div class="panel-heading"><div><h2>Today's focus</h2><p class="muted">Keep the next action simple.</p></div><a class="subtle-link" href="{{ url_for('tasks') }}">View all</a></div>{% for task in tasks if not task.completed %}<div class="list-row"><span class="priority {{ task.priority }}"></span><div><b>{{ task.title }}</b><small>{{ task.priority|title }} priority{% if task.due_date %} &middot; due {{ task.due_date }}{% endif %}</small></div></div>{% else %}<div class="empty">You have no open tasks. Add something meaningful when you are ready.</div>{% endfor %}</article>
+</section>
+<script>
+window.addEventListener('load', function () {
+  var canvas = document.getElementById('activity');
+  if (!window.Chart || !canvas) { document.getElementById('chart-fallback').hidden = false; return; }
+  new Chart(canvas, {type:'bar', data:{labels:{{ chart|map(attribute='day')|list|tojson }}, datasets:[{data:{{ chart|map(attribute='count')|list|tojson }}, backgroundColor:'#8b7dff', hoverBackgroundColor:'#aa9fff', borderRadius:7, borderSkipped:false}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{displayColors:false}}, scales:{x:{grid:{display:false}, border:{display:false}, ticks:{color:'#aab5c8'}}, y:{beginAtZero:true, ticks:{precision:0,color:'#aab5c8'}, grid:{color:'rgba(151, 165, 190, .13)'}, border:{display:false}}}}});
+});
+</script>
+{% endblock %}

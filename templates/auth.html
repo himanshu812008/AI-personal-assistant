@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Create account' if mode == 'register' else 'Log in' }} · AI Life Assistant{% endblock %}
+{% block content %}
+<section class="auth-card">
+  <div class="logo">&#10022;</div>
+  <p class="eyebrow">AI Life Assistant</p>
+  <h1>{{ 'Create your account' if mode == 'register' else 'Welcome back' }}</h1>
+  <p class="muted">{{ 'Choose a username and password to get started.' if mode == 'register' else 'Log in to continue with your private workspace.' }}</p>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Username<input name="username" required minlength="3" maxlength="32" pattern="[A-Za-z0-9_.-]+" autocomplete="username" autocapitalize="none" spellcheck="false" value="{{ request.form.get('username', '') }}" placeholder="e.g. alex_01"></label>
+    {% if mode == 'register' %}<p class="field-help">3–32 characters: letters, numbers, dots, hyphens, or underscores.</p>{% endif %}
+    <label>Password<input name="password" type="password" required minlength="8" autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}" placeholder="At least 8 characters"></label>
+    <button type="submit">{{ 'Create account' if mode == 'register' else 'Log in' }}</button>
+  </form>
+  <p class="muted auth-switch">{% if mode == 'register' %}Already have an account? <a href="{{ url_for('login') }}">Log in</a>{% else %}New here? <a href="{{ url_for('register') }}">Create an account</a>{% endif %}</p>
+</section>
+{% endblock %}

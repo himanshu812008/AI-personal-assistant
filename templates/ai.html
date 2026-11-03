@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<header class="page-header"><div><p class="eyebrow">Your private coach</p><h1>AI Assistant</h1><p class="muted">Ask in English, Hindi, or Hinglish. Suggestions use only your saved tasks, habits, and goals.</p></div></header>
+<section class="ai-layout">
+  <article class="panel actions"><h2>Quick insights</h2><p class="muted small">Choose an option or ask your own question.</p><button class="ai-action" type="button" data-mode="daily_plan">Plan my day</button><button class="ai-action" type="button" data-mode="weekly_analysis">Review my progress</button><button class="ai-action" type="button" data-mode="suggestions">Suggest next steps</button><p class="privacy-note">Your information stays tied to your account. Add <code>GEMINI_API_KEY</code> to <code>.env</code> to enable replies.</p></article>
+  <article class="panel chat"><div class="chat-heading"><div><h2>Conversation</h2><p class="muted">Hindi: Aaj ka plan banaiye</p></div><span id="ai-status" class="ai-status" aria-live="polite"></span></div><div id="messages" aria-live="polite">{% for m in messages %}<div class="message {{ m.role }}">{{ m.content }}</div>{% else %}<div class="empty" id="welcome">Start a private conversation whenever you need a clearer plan.</div>{% endfor %}</div><form id="chat-form" novalidate><label class="sr-only" for="chat-input">Message the AI assistant</label><input id="chat-input" placeholder="Ask anything / Kuch bhi poochiye" maxlength="2000" required autocomplete="off"><button type="submit">Send</button></form></article>
+</section>
+{% endblock %}
